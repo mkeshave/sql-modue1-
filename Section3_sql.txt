@@ -1,0 +1,99 @@
+--Q1.1. Creating a table student_164305 with 3 columns and inserting 5 rows into that table.
+
+--creating a table
+
+create table student_164305
+(RollNo Int NOT NULL IDENTITY (1001,1),
+StudentName varchar(30),
+Stream varchar(30)
+)
+
+--inseting values into table
+insert into student_164305(StudentName,Stream)
+values
+('Anil','Science'),
+('Madhavi','Arts'),
+('Rajeev','Science'),
+('Shalaka','Commerce'),
+('Jivika','Arts');
+
+--Displaying all the data  that have been inserted properly.
+select * from student_164305
+
+
+--2.creating a table Marks_164305 with 7 columns
+
+create table Marks_164305
+(RollNo Int NOT NULL  ,
+Subject1 int ,
+Subject2 int ,
+Subject3 int ,
+Subject4 int ,
+Subject5 int ,
+Total as (Subject1+Subject2+Subject3+Subject4+Subject5)
+)
+
+
+--Inserting values into table
+insert into Marks_164305(RollNo,Subject1,Subject2,Subject3,Subject4,Subject5)
+values
+(1002,35,40,35,45,37),
+(1001,45,40,38,30,32),
+(1003,48,40,49,42,42),
+(1004,40,35,38,48,38);
+
+--Displaying all the data of table
+
+select * from Marks_164305
+
+
+
+--Q.2.1.Display RollNo, StudentName and Stream for all the students.
+
+select * from student_164305
+
+
+
+
+--Q.2.2 Display marks of the student whose roll no is 1004.
+
+select Subject1, Subject2, Subject3, Subject4, Subject5, Total from Marks_16430 
+where RollNo='1004'
+
+
+--Q.2.4. Create a stored Procedure to add a record in Marks table. Display the definition of stored Procedure.
+
+--creating Procedure
+create procedure ins_marks @rollnumber int,@sub1 int,@sub2 int,@sub3 int,@sub4 int,@sub5 int
+as
+begin
+ if exists (select RollNo from Marks_164305 where RollNo=@rollnumber)
+	begin
+	 raiserror('Roll number is already present',1,1,@rollnumber)
+	end
+ else
+	begin try
+		begin
+		 insert into Marks_164305(RollNo,Subject1,Subject2,Subject3,Subject4,Subject5)
+		 values (@rollnumber,@sub1,@sub2,@sub3,@sub4,@sub5)
+	    end
+	end try
+	begin catch
+	print 'Please insert new Roll number'
+	end catch
+end
+
+
+
+--Executing Procedure with correct values
+
+exec ins_marks 1005,40,40,40,40,40
+
+--Executing Procedure with wrong values to check Exception handling.
+
+exec ins_marks 1003,40,40,40,40,40
+
+--Displaying Definition of stored Procedure
+sp_helptext ins_marks
+
+
